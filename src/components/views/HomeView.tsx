@@ -26,7 +26,7 @@ export function HomeView({ onCreateWebsite, isCreating }: HomeViewProps) {
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-            Turn ideas into live websites, websites into tokens, and tokens into a real marketplace — in one click
+            Turn ideas into live websites with working tools — instantly. Every website is a token. Every tool adds value.
           </p>
         </div>
 
@@ -48,24 +48,24 @@ export function HomeView({ onCreateWebsite, isCreating }: HomeViewProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-3">
-            <div className="text-4xl">🌐</div>
-            <h3 className="text-lg font-semibold text-foreground">Instant Websites</h3>
+            <div className="text-4xl">⚡</div>
+            <h3 className="text-lg font-semibold text-foreground">Working Tools, Instant</h3>
             <p className="text-sm text-muted-foreground">
-              Real research-backed websites generated from your ideas
+              Real functional components render on first load — no placeholders
             </p>
           </div>
           <div className="space-y-3">
             <div className="text-4xl">🪙</div>
-            <h3 className="text-lg font-semibold text-foreground">Tradable Tokens</h3>
+            <h3 className="text-lg font-semibold text-foreground">Token Per Function</h3>
             <p className="text-sm text-muted-foreground">
-              Every website is a token, every token is a website
+              Each tool mints value — websites are collectible assets
             </p>
           </div>
           <div className="space-y-3">
             <div className="text-4xl">🏪</div>
             <h3 className="text-lg font-semibold text-foreground">Real Marketplace</h3>
             <p className="text-sm text-muted-foreground">
-              Trade ownership of live websites with real value
+              Trade ownership of live websites with real functionality
             </p>
           </div>
         </div>

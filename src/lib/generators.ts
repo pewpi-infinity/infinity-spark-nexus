@@ -1,4 +1,5 @@
-import { Website, Token, Wallet, WebsiteTheme, Transaction } from './types'
+import { Website, Token, Wallet, WebsiteTheme, Transaction, ToolComponent } from './types'
+import { classifyIntentToTools, getToolValue } from './toolClassifier'
 
 export function generateWebsiteId(): string {
   return `site-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -19,8 +20,9 @@ export function generateTransactionId(): string {
 export function calculateWebsiteValue(website: Website): number {
   const baseValue = 1000
   const pageValue = website.pages.length * 100
+  const toolValue = website.tools.reduce((sum, tool) => sum + getToolValue(tool.type), 0)
   const ageBonus = Math.floor((Date.now() - website.createdAt) / (1000 * 60 * 60 * 24)) * 10
-  return baseValue + pageValue + ageBonus
+  return baseValue + pageValue + toolValue + ageBonus
 }
 
 export function formatValue(value: number): string {
@@ -87,11 +89,24 @@ export function getThemeStyles(theme: WebsiteTheme): string {
   return themes[theme] || themes.cosmic
 }
 
-export async function generateWebsiteContent(query: string): Promise<{
+export async function generateWebsiteContent(query: string, walletAddress: string): Promise<{
   title: string
   description: string
   content: string
+  tools: ToolComponent[]
 }> {
+  const toolSpecs = await classifyIntentToTools(query)
+  
+  const tools: ToolComponent[] = toolSpecs.map((spec, index) => ({
+    id: `tool-${Date.now()}-${index}`,
+    type: spec.type,
+    title: spec.title,
+    description: spec.description,
+    config: spec.config,
+    addedAt: Date.now(),
+    addedBy: walletAddress
+  }))
+
   const promptText = `You are creating a comprehensive, educational website homepage based on this user query: ${query}
 
 Generate a complete website with:
@@ -120,22 +135,37 @@ Return ONLY valid JSON in this exact format:
     return {
       title: parsed.title || 'Untitled Website',
       description: parsed.description || 'A new Infinity website',
-      content: parsed.content || '## Welcome\n\nContent is being generated...'
+      content: parsed.content || '## Welcome\n\nContent is being generated...',
+      tools
     }
   } catch (error) {
     console.error('Error generating content:', error)
     return {
       title: query,
       description: 'An Infinity-powered website',
-      content: `## ${query}\n\nThis website was created to explore: ${query}\n\nContent generation is in progress...`
+      content: `## ${query}\n\nThis website was created to explore: ${query}\n\nContent generation is in progress...`,
+      tools
     }
   }
 }
 
-export async function generatePageContent(websiteContext: string, pageQuery: string): Promise<{
+export async function generatePageContent(websiteContext: string, pageQuery: string, walletAddress: string): Promise<{
   title: string
   content: string
+  tools: ToolComponent[]
 }> {
+  const toolSpecs = await classifyIntentToTools(pageQuery)
+  
+  const tools: ToolComponent[] = toolSpecs.map((spec, index) => ({
+    id: `tool-${Date.now()}-${index}`,
+    type: spec.type,
+    title: spec.title,
+    description: spec.description,
+    config: spec.config,
+    addedAt: Date.now(),
+    addedBy: walletAddress
+  }))
+
   const promptText = `You are adding a new page to a website about ${websiteContext}.
 
 The user wants to add a page about: ${pageQuery}
@@ -156,13 +186,15 @@ Return ONLY valid JSON in this exact format:
     
     return {
       title: parsed.title || pageQuery,
-      content: parsed.content || `## ${pageQuery}\n\nContent coming soon...`
+      content: parsed.content || `## ${pageQuery}\n\nContent coming soon...`,
+      tools
     }
   } catch (error) {
     console.error('Error generating page:', error)
     return {
       title: pageQuery,
-      content: `## ${pageQuery}\n\nThis page explores ${pageQuery} in detail.`
+      content: `## ${pageQuery}\n\nThis page explores ${pageQuery} in detail.`,
+      tools
     }
   }
 }

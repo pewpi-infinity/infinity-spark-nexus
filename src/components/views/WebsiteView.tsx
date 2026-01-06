@@ -8,10 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { formatValue, formatWalletAddress, formatDate } from '@/lib/generators'
-import { ArrowLeft, Crown, Eye, EyeSlash, Plus, Tag, Users, UserPlus, X } from '@phosphor-icons/react'
+import { ArrowLeft, Crown, Eye, EyeSlash, Plus, Tag, Users, UserPlus, X, Wrench } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { marked } from 'marked'
 import { toast } from 'sonner'
+import { ToolRenderer } from '@/components/tools/ToolRenderer'
 
 interface WebsiteViewProps {
   website: Website
@@ -45,6 +46,7 @@ export function WebsiteView({
   const [collabRole, setCollabRole] = useState<'editor' | 'viewer'>('editor')
 
   const displayContent = selectedPage ? selectedPage.content : website.content
+  const displayTools = selectedPage ? selectedPage.tools : website.tools
 
   const handleListForSale = () => {
     const price = parseFloat(salePrice)
@@ -241,8 +243,8 @@ export function WebsiteView({
               <div>{website.pages.length}</div>
             </div>
             <div className="space-y-1">
-              <div className="text-muted-foreground">URL</div>
-              <div className="font-mono truncate">{website.url}</div>
+              <div className="text-muted-foreground">Functional Tools</div>
+              <div className="font-semibold text-secondary">{displayTools.length}</div>
             </div>
           </div>
 
@@ -297,6 +299,20 @@ export function WebsiteView({
                 >
                   {page.title}
                 </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {displayTools.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Wrench size={24} className="text-accent" />
+              <h3 className="text-lg font-semibold">Functional Tools ({displayTools.length})</h3>
+            </div>
+            <div className="space-y-6">
+              {displayTools.map((tool) => (
+                <ToolRenderer key={tool.id} tool={tool} />
               ))}
             </div>
           </div>

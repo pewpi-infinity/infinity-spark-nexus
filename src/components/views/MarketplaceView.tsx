@@ -46,8 +46,8 @@ export function MarketplaceView({ websites, currentWallet, onBack, onViewWebsite
 
           <Card className="cosmic-border bg-primary/20 backdrop-blur-sm p-6">
             <p className="text-sm text-muted-foreground mb-2">
-              Every website is a token. Every token is a website. Browse live websites created by others, 
-              and trade using Infinity (∞) as the settlement currency.
+              Every website is a token backed by working tools. Browse live websites with functional components, 
+              and trade using Infinity (∞) as the settlement currency. More tools = more value.
             </p>
             {currentWallet && (
               <p className="text-sm font-semibold text-accent">

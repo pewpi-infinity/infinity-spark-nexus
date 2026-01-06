@@ -55,7 +55,7 @@ function App() {
     try {
       const currentWallet = ensureWallet()
       
-      const { title, description, content } = await generateWebsiteContent(query)
+      const { title, description, content, tools } = await generateWebsiteContent(query, currentWallet.address)
       
       const websiteId = generateWebsiteId()
       const tokenId = generateTokenId()
@@ -73,6 +73,7 @@ function App() {
         createdAt: Date.now(),
         lastModified: Date.now(),
         pages: [],
+        tools,
         theme,
         collaborators: [{
           wallet: currentWallet.address,
@@ -82,6 +83,8 @@ function App() {
         }],
         isListedForSale: false
       }
+      
+      newWebsite.value = calculateWebsiteValue(newWebsite)
 
       const newToken: Token = {
         id: tokenId,
@@ -93,7 +96,8 @@ function App() {
         metadata: {
           title,
           description,
-          query
+          query,
+          toolCount: tools.length
         }
       }
 
@@ -126,12 +130,13 @@ function App() {
     setIsAddingPage(true)
     
     try {
-      const { title, content } = await generatePageContent(selectedWebsite.title, query)
+      const { title, content, tools } = await generatePageContent(selectedWebsite.title, query, wallet?.address || 'unknown')
       
       const newPage: Page = {
         id: `page-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title,
         content,
+        tools,
         createdAt: Date.now(),
         author: wallet?.address || 'unknown'
       }
@@ -151,16 +156,22 @@ function App() {
         })
       )
 
+      const toolValue = newPage.tools.reduce((sum, tool) => sum + 100, 0)
+
       setWallet((currentWallet) => {
         if (!currentWallet) return null
         return {
           ...currentWallet,
-          balance: currentWallet.balance + 100,
+          balance: currentWallet.balance + 100 + toolValue,
           tokens: currentWallet.tokens.map(token => {
             if (token.websiteId === selectedWebsite.id) {
               return {
                 ...token,
-                value: token.value + 100
+                value: token.value + 100 + toolValue,
+                metadata: {
+                  ...token.metadata,
+                  toolCount: (token.metadata.toolCount || 0) + newPage.tools.length
+                }
               }
             }
             return token
@@ -168,7 +179,7 @@ function App() {
         }
       })
 
-      toast.success(`Page "${title}" added successfully!`)
+      toast.success(`Page "${title}" added with ${newPage.tools.length} tool(s)!`)
     } catch (error) {
       console.error('Error adding page:', error)
       toast.error('Failed to add page. Please try again.')

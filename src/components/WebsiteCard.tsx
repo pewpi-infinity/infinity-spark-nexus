@@ -60,6 +60,10 @@ export function WebsiteCard({ website, isOwned = false, onView, onPurchase, show
             <span>Pages:</span>
             <span>{website.pages.length} page{website.pages.length !== 1 ? 's' : ''}</span>
           </div>
+          <div className="flex justify-between">
+            <span>Tools:</span>
+            <span className="font-semibold text-secondary">{website.tools.length} functional tool{website.tools.length !== 1 ? 's' : ''}</span>
+          </div>
           {website.collaborators.length > 1 && (
             <div className="flex justify-between">
               <span>Collaborators:</span>

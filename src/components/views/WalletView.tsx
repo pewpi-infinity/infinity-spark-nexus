@@ -92,6 +92,11 @@ export function WalletView({ wallet, onBack, onViewWebsite }: WalletViewProps) {
                       <Badge variant="outline" className="text-accent border-accent/50">
                         {formatValue(token.value)}
                       </Badge>
+                      {token.metadata.toolCount !== undefined && token.metadata.toolCount > 0 && (
+                        <Badge variant="outline" className="text-secondary border-secondary/50">
+                          {token.metadata.toolCount} tool{token.metadata.toolCount !== 1 ? 's' : ''}
+                        </Badge>
+                      )}
                     </div>
 
                     <div className="space-y-2 text-sm text-muted-foreground mb-4">
@@ -145,7 +150,8 @@ export function WalletView({ wallet, onBack, onViewWebsite }: WalletViewProps) {
               <h3 className="text-lg font-semibold mb-2">About Infinity</h3>
               <p className="text-sm text-muted-foreground">
                 Infinity (∞) is the settlement currency for all website-tokens in the marketplace. 
-                Every website you create becomes a tradable token backed by real content and research.
+                Every website you create becomes a tradable token backed by real working tools and functional components. 
+                More tools = more value.
               </p>
             </Card>
           </TabsContent>

@@ -1,5 +1,37 @@
 export type WebsiteTheme = 'cosmic' | 'minimal' | 'editorial' | 'technical' | 'vibrant'
 
+export type ToolPrimitive = 
+  | 'video-player'
+  | 'chart'
+  | 'gallery'
+  | 'timeline'
+  | 'map'
+  | 'dashboard'
+  | 'store'
+  | 'calculator'
+  | 'text-editor'
+  | 'calendar'
+  | 'feed'
+  | 'chat'
+  | 'form'
+  | 'table'
+  | 'audio-player'
+  | 'code-editor'
+  | 'kanban'
+  | 'search'
+  | 'analytics'
+  | 'content-hub'
+
+export interface ToolComponent {
+  id: string
+  type: ToolPrimitive
+  title: string
+  description: string
+  config: Record<string, any>
+  addedAt: number
+  addedBy: string
+}
+
 export interface Collaborator {
   wallet: string
   role: 'owner' | 'editor' | 'viewer'
@@ -20,6 +52,7 @@ export interface Website {
   createdAt: number
   lastModified: number
   pages: Page[]
+  tools: ToolComponent[]
   theme: WebsiteTheme
   collaborators: Collaborator[]
   isListedForSale: boolean
@@ -30,6 +63,7 @@ export interface Page {
   id: string
   title: string
   content: string
+  tools: ToolComponent[]
   createdAt: number
   author: string
 }
@@ -41,10 +75,12 @@ export interface Token {
   ownerWallet: string
   value: number
   createdAt: number
+  toolType?: string
   metadata: {
     title: string
     description: string
     query: string
+    toolCount?: number
   }
 }
 
